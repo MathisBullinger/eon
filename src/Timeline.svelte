@@ -1,5 +1,6 @@
 <script lang="ts">
   import data from '../data/intervals.json'
+  import { blendHexColorString as blend } from './utils/color'
 
   let byLvl = {}
   for (let interval of data) {
@@ -8,10 +9,13 @@
       ...interval,
       start: -interval.start,
       end: -interval.end,
+      txColor: blend(interval.color + '55', '#ffffff'),
     })
   }
 
-  const levels: typeof data[] = Object.entries(byLvl)
+  const levels: (typeof data[number] & {
+    txColor: string
+  })[][] = Object.entries(byLvl)
     .sort(([k1], [k2]) => parseInt(k1) - parseInt(k2))
     .map(([, v]) => v) as any
 
@@ -58,7 +62,7 @@
   }
 
   .line {
-    transform-origin: center 5px;
+    transform-origin: center;
     transition: transform 0.1s ease-out;
     opacity: 0.9;
     transform-origin: 50% 50%;
@@ -67,6 +71,13 @@
 
   .line:hover {
     transform: scaleY(1.2);
+  }
+
+  text {
+    font-size: 12px;
+    text-anchor: middle;
+    transform-box: fill-box;
+    transform-origin: center;
   }
 </style>
 
@@ -78,6 +89,15 @@
   on:mousewheel={scroll}>
   {#each levels as level}
     {#each level as span}
+      {#if span.lvl === 1}
+        <text
+          x={scale(span.start) + scale(span.end - span.start) / 2}
+          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer}
+          fill={span.txColor}
+          transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}>
+          {span.name}
+        </text>
+      {/if}
       <rect
         class="line"
         x={scale(span.start)}
