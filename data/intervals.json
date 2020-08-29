@@ -1,0 +1,1192 @@
+[
+  {
+    "name": "Hadean",
+    "lvl": 1,
+    "color": "#cb0381",
+    "start": 4600,
+    "end": 4000
+  },
+  {
+    "name": "Archean",
+    "lvl": 1,
+    "color": "#F0047F",
+    "start": 4000,
+    "end": 2500
+  },
+  {
+    "name": "Proterozoic",
+    "lvl": 1,
+    "color": "#F73563",
+    "start": 2500,
+    "end": 541
+  },
+  {
+    "name": "Phanerozoic",
+    "lvl": 1,
+    "color": "#9AD9DD",
+    "start": 541,
+    "end": 0
+  },
+  {
+    "name": "Eoarchean",
+    "lvl": 2,
+    "color": "#DA037F",
+    "start": 4000,
+    "end": 3600
+  },
+  {
+    "name": "Paleoarchean",
+    "lvl": 2,
+    "color": "#F444A9",
+    "start": 3600,
+    "end": 3200
+  },
+  {
+    "name": "Mesoarchean",
+    "lvl": 2,
+    "color": "#F768A9",
+    "start": 3200,
+    "end": 2800
+  },
+  {
+    "name": "Neoarchean",
+    "lvl": 2,
+    "color": "#F99BC1",
+    "start": 2800,
+    "end": 2500
+  },
+  {
+    "name": "Paleoproterozoic",
+    "lvl": 2,
+    "color": "#F74370",
+    "start": 2500,
+    "end": 1600
+  },
+  {
+    "name": "Mesoproterozoic",
+    "lvl": 2,
+    "color": "#FDB462",
+    "start": 1600,
+    "end": 1000
+  },
+  {
+    "name": "Neoproterozoic",
+    "lvl": 2,
+    "color": "#FEB342",
+    "start": 1000,
+    "end": 541
+  },
+  {
+    "name": "Paleozoic",
+    "lvl": 2,
+    "color": "#99C08D",
+    "start": 541,
+    "end": 252.2
+  },
+  {
+    "name": "Mesozoic",
+    "lvl": 2,
+    "color": "#67C5CA",
+    "start": 252.2,
+    "end": 66
+  },
+  {
+    "name": "Cenozoic",
+    "lvl": 2,
+    "color": "#F2F91D",
+    "start": 66,
+    "end": 0
+  },
+  {
+    "name": "Siderian",
+    "lvl": 3,
+    "color": "#F74F7C",
+    "start": 2500,
+    "end": 2300
+  },
+  {
+    "name": "Rhyacian",
+    "lvl": 3,
+    "color": "#F75B89",
+    "start": 2300,
+    "end": 2050
+  },
+  {
+    "name": "Orosirian",
+    "lvl": 3,
+    "color": "#F76898",
+    "start": 2050,
+    "end": 1800
+  },
+  {
+    "name": "Statherian",
+    "lvl": 3,
+    "color": "#F875A7",
+    "start": 1800,
+    "end": 1600
+  },
+  {
+    "name": "Calymmian",
+    "lvl": 3,
+    "color": "#FDC07A",
+    "start": 1600,
+    "end": 1400
+  },
+  {
+    "name": "Ectasian",
+    "lvl": 3,
+    "color": "#F3CC8A",
+    "start": 1400,
+    "end": 1200
+  },
+  {
+    "name": "Stenian",
+    "lvl": 3,
+    "color": "#FED99A",
+    "start": 1200,
+    "end": 1000
+  },
+  {
+    "name": "Tonian",
+    "lvl": 3,
+    "color": "#FEBF4E",
+    "start": 1000,
+    "end": 850
+  },
+  {
+    "name": "Cryogenian",
+    "lvl": 3,
+    "color": "#FECC5C",
+    "start": 850,
+    "end": 635
+  },
+  {
+    "name": "Ediacaran",
+    "lvl": 3,
+    "color": "#FED96A",
+    "start": 635,
+    "end": 541
+  },
+  {
+    "name": "Cambrian",
+    "lvl": 3,
+    "color": "#7FA056",
+    "start": 541,
+    "end": 485.4
+  },
+  {
+    "name": "Ordovician",
+    "lvl": 3,
+    "color": "#009270",
+    "start": 485.4,
+    "end": 443.4
+  },
+  {
+    "name": "Silurian",
+    "lvl": 3,
+    "color": "#B3E1B6",
+    "start": 443.4,
+    "end": 419.2
+  },
+  {
+    "name": "Devonian",
+    "lvl": 3,
+    "color": "#CB8C37",
+    "start": 419.2,
+    "end": 358.9
+  },
+  {
+    "name": "Carboniferous",
+    "lvl": 3,
+    "color": "#67A599",
+    "start": 358.9,
+    "end": 298.9
+  },
+  {
+    "name": "Permian",
+    "lvl": 3,
+    "color": "#F04028",
+    "start": 298.9,
+    "end": 252.2
+  },
+  {
+    "name": "Triassic",
+    "lvl": 3,
+    "color": "#812B92",
+    "start": 252.2,
+    "end": 201.3
+  },
+  {
+    "name": "Jurassic",
+    "lvl": 3,
+    "color": "#34B2C9",
+    "start": 201.3,
+    "end": 145
+  },
+  {
+    "name": "Cretaceous",
+    "lvl": 3,
+    "color": "#7FC64E",
+    "start": 145,
+    "end": 66
+  },
+  {
+    "name": "Paleogene",
+    "lvl": 3,
+    "color": "#FD9A52",
+    "start": 66,
+    "end": 23.03
+  },
+  {
+    "name": "Neogene",
+    "lvl": 3,
+    "color": "#FFE619",
+    "start": 23.03,
+    "end": 2.588
+  },
+  {
+    "name": "Quaternary",
+    "lvl": 3,
+    "color": "#F9F97F",
+    "start": 2.588,
+    "end": 0
+  },
+  {
+    "name": "Terreneuvian",
+    "lvl": 4,
+    "color": "#8CB06C",
+    "start": 541,
+    "end": 521
+  },
+  {
+    "name": "Series 2",
+    "lvl": 4,
+    "color": "#99C078",
+    "start": 521,
+    "end": 509
+  },
+  {
+    "name": "Series 3",
+    "lvl": 4,
+    "color": "#A6CF86",
+    "start": 509,
+    "end": 497
+  },
+  {
+    "name": "Furongian",
+    "lvl": 4,
+    "color": "#B3E095",
+    "start": 497,
+    "end": 485.4
+  },
+  {
+    "name": "Early Ordovician",
+    "lvl": 4,
+    "color": "#1A9D6F",
+    "start": 485.4,
+    "end": 470
+  },
+  {
+    "name": "Middle Ordovician",
+    "lvl": 4,
+    "color": "#4DB47E",
+    "start": 470,
+    "end": 458.4
+  },
+  {
+    "name": "Late Ordovician",
+    "lvl": 4,
+    "color": "#7FCA93",
+    "start": 458.4,
+    "end": 443.4
+  },
+  {
+    "name": "Llandovery",
+    "lvl": 4,
+    "color": "#99D7B3",
+    "start": 443.4,
+    "end": 433.4
+  },
+  {
+    "name": "Wenlock",
+    "lvl": 4,
+    "color": "#B3E1C2",
+    "start": 433.4,
+    "end": 427.4
+  },
+  {
+    "name": "Ludlow",
+    "lvl": 4,
+    "color": "#BFE6CF",
+    "start": 427.4,
+    "end": 423
+  },
+  {
+    "name": "Pridoli",
+    "lvl": 4,
+    "color": "#E6F5E1",
+    "start": 423,
+    "end": 419.2
+  },
+  {
+    "name": "Early Devonian",
+    "lvl": 4,
+    "color": "#E5AC4D",
+    "start": 419.2,
+    "end": 393.3
+  },
+  {
+    "name": "Middle Devonian",
+    "lvl": 4,
+    "color": "#F1C868",
+    "start": 393.3,
+    "end": 382.7
+  },
+  {
+    "name": "Late Devonian",
+    "lvl": 4,
+    "color": "#F1E19D",
+    "start": 382.7,
+    "end": 358.9
+  },
+  {
+    "name": "Mississippian",
+    "lvl": 4,
+    "color": "#678F66",
+    "start": 358.9,
+    "end": 323.2
+  },
+  {
+    "name": "Pennsylvanian",
+    "lvl": 4,
+    "color": "#99C2B5",
+    "start": 323.2,
+    "end": 298.9
+  },
+  {
+    "name": "Cisuralian",
+    "lvl": 4,
+    "color": "#EF5845",
+    "start": 298.9,
+    "end": 272.3
+  },
+  {
+    "name": "Guadalupian",
+    "lvl": 4,
+    "color": "#FB745C",
+    "start": 272.3,
+    "end": 259.9
+  },
+  {
+    "name": "Lopingian",
+    "lvl": 4,
+    "color": "#FBA794",
+    "start": 259.9,
+    "end": 252.2
+  },
+  {
+    "name": "Early Triassic",
+    "lvl": 4,
+    "color": "#983999",
+    "start": 252.2,
+    "end": 247.2
+  },
+  {
+    "name": "Middle Triassic",
+    "lvl": 4,
+    "color": "#B168B1",
+    "start": 247.2,
+    "end": 237
+  },
+  {
+    "name": "Late Triassic",
+    "lvl": 4,
+    "color": "#BD8CC3",
+    "start": 237,
+    "end": 201.3
+  },
+  {
+    "name": "Early Jurassic",
+    "lvl": 4,
+    "color": "#42AED0",
+    "start": 201.3,
+    "end": 174.1
+  },
+  {
+    "name": "Middle Jurassic",
+    "lvl": 4,
+    "color": "#80CFD8",
+    "start": 174.1,
+    "end": 163.5
+  },
+  {
+    "name": "Late Jurassic",
+    "lvl": 4,
+    "color": "#B3E3EE",
+    "start": 163.5,
+    "end": 145
+  },
+  {
+    "name": "Early Cretaceous",
+    "lvl": 4,
+    "color": "#8CCD57",
+    "start": 145,
+    "end": 100.5
+  },
+  {
+    "name": "Late Cretaceous",
+    "lvl": 4,
+    "color": "#A6D84A",
+    "start": 100.5,
+    "end": 66
+  },
+  {
+    "name": "Paleocene",
+    "lvl": 4,
+    "color": "#FDA75F",
+    "start": 66,
+    "end": 56
+  },
+  {
+    "name": "Eocene",
+    "lvl": 4,
+    "color": "#FDB46C",
+    "start": 56,
+    "end": 33.9
+  },
+  {
+    "name": "Oligocene",
+    "lvl": 4,
+    "color": "#FDC07A",
+    "start": 33.9,
+    "end": 23.03
+  },
+  {
+    "name": "Miocene",
+    "lvl": 4,
+    "color": "#FFFF00",
+    "start": 23.03,
+    "end": 5.333
+  },
+  {
+    "name": "Pliocene",
+    "lvl": 4,
+    "color": "#FFFF99",
+    "start": 5.333,
+    "end": 2.588
+  },
+  {
+    "name": "Pleistocene",
+    "lvl": 4,
+    "color": "#FFF2AE",
+    "start": 2.588,
+    "end": 0.0117
+  },
+  {
+    "name": "Holocene",
+    "lvl": 4,
+    "color": "#FEF2E0",
+    "start": 0.0117,
+    "end": 0
+  },
+  {
+    "name": "Fortunian",
+    "lvl": 5,
+    "color": "#99B575",
+    "start": 541,
+    "end": 529
+  },
+  {
+    "name": "Stage 2",
+    "lvl": 5,
+    "color": "#A6BA80",
+    "start": 529,
+    "end": 521
+  },
+  {
+    "name": "Stage 3",
+    "lvl": 5,
+    "color": "#A6C583",
+    "start": 521,
+    "end": 514
+  },
+  {
+    "name": "Stage 4",
+    "lvl": 5,
+    "color": "#B3CA8E",
+    "start": 514,
+    "end": 509
+  },
+  {
+    "name": "Stage 5",
+    "lvl": 5,
+    "color": "#B3D492",
+    "start": 509,
+    "end": 504.5
+  },
+  {
+    "name": "Drumian",
+    "lvl": 5,
+    "color": "#BFD99D",
+    "start": 504.5,
+    "end": 500.5
+  },
+  {
+    "name": "Guzhangian",
+    "lvl": 5,
+    "color": "#CCDFAA",
+    "start": 500.5,
+    "end": 497
+  },
+  {
+    "name": "Paibian",
+    "lvl": 5,
+    "color": "#CCEBAE",
+    "start": 497,
+    "end": 494
+  },
+  {
+    "name": "Jiangshanian",
+    "lvl": 5,
+    "color": "#D9F0BB",
+    "start": 494,
+    "end": 489.5
+  },
+  {
+    "name": "Stage 10",
+    "lvl": 5,
+    "color": "#E6F5C9",
+    "start": 489.5,
+    "end": 485.4
+  },
+  {
+    "name": "Tremadocian",
+    "lvl": 5,
+    "color": "#33A97E",
+    "start": 485.4,
+    "end": 477.7
+  },
+  {
+    "name": "Floian",
+    "lvl": 5,
+    "color": "#41B087",
+    "start": 477.7,
+    "end": 470
+  },
+  {
+    "name": "Dapingian",
+    "lvl": 5,
+    "color": "#66C092",
+    "start": 470,
+    "end": 467.3
+  },
+  {
+    "name": "Darriwilian",
+    "lvl": 5,
+    "color": "#74C69C",
+    "start": 467.3,
+    "end": 458.4
+  },
+  {
+    "name": "Sandbian",
+    "lvl": 5,
+    "color": "#8CD094",
+    "start": 458.4,
+    "end": 453
+  },
+  {
+    "name": "Katian",
+    "lvl": 5,
+    "color": "#99D69F",
+    "start": 453,
+    "end": 445.2
+  },
+  {
+    "name": "Hirnantian",
+    "lvl": 5,
+    "color": "#A6DBAB",
+    "start": 445.2,
+    "end": 443.4
+  },
+  {
+    "name": "Rhuddanian",
+    "lvl": 5,
+    "color": "#A6DCB5",
+    "start": 443.4,
+    "end": 440.8
+  },
+  {
+    "name": "Aeronian",
+    "lvl": 5,
+    "color": "#B3E1C2",
+    "start": 440.8,
+    "end": 438.5
+  },
+  {
+    "name": "Telychian",
+    "lvl": 5,
+    "color": "#BFE6D1",
+    "start": 438.5,
+    "end": 433.4
+  },
+  {
+    "name": "Sheinwoodian",
+    "lvl": 5,
+    "color": "#BFE6C3",
+    "start": 433.4,
+    "end": 430.5
+  },
+  {
+    "name": "Homerian",
+    "lvl": 5,
+    "color": "#CCEBD1",
+    "start": 430.5,
+    "end": 427.4
+  },
+  {
+    "name": "Gorstian",
+    "lvl": 5,
+    "color": "#CCECDD",
+    "start": 427.4,
+    "end": 425.6
+  },
+  {
+    "name": "Ludfordian",
+    "lvl": 5,
+    "color": "#D9F0DF",
+    "start": 425.6,
+    "end": 423
+  },
+  {
+    "name": "Pridoli",
+    "lvl": 5,
+    "color": "#E6F5E1",
+    "start": 423,
+    "end": 419.2
+  },
+  {
+    "name": "Lochkovian",
+    "lvl": 5,
+    "color": "#E5B75A",
+    "start": 419.2,
+    "end": 410.8
+  },
+  {
+    "name": "Pragian",
+    "lvl": 5,
+    "color": "#E5C468",
+    "start": 410.8,
+    "end": 407.6
+  },
+  {
+    "name": "Emsian",
+    "lvl": 5,
+    "color": "#E5D075",
+    "start": 407.6,
+    "end": 393.3
+  },
+  {
+    "name": "Eifelian",
+    "lvl": 5,
+    "color": "#F1D576",
+    "start": 393.3,
+    "end": 387.7
+  },
+  {
+    "name": "Givetian",
+    "lvl": 5,
+    "color": "#F1E185",
+    "start": 387.7,
+    "end": 382.7
+  },
+  {
+    "name": "Frasnian",
+    "lvl": 5,
+    "color": "#F2EDAD",
+    "start": 382.7,
+    "end": 372.2
+  },
+  {
+    "name": "Famennian",
+    "lvl": 5,
+    "color": "#F2EDC5",
+    "start": 372.2,
+    "end": 358.9
+  },
+  {
+    "name": "Tournaisian",
+    "lvl": 5,
+    "color": "#8CB06C",
+    "start": 358.9,
+    "end": 346.7
+  },
+  {
+    "name": "Visean",
+    "lvl": 5,
+    "color": "#A6B96C",
+    "start": 346.7,
+    "end": 330.9
+  },
+  {
+    "name": "Serpukhovian",
+    "lvl": 5,
+    "color": "#BFC26B",
+    "start": 330.9,
+    "end": 323.2
+  },
+  {
+    "name": "Bashkirian",
+    "lvl": 5,
+    "color": "#99C2B6",
+    "start": 323.2,
+    "end": 315.2
+  },
+  {
+    "name": "Moscovian",
+    "lvl": 5,
+    "color": "#B3CBB9",
+    "start": 315.2,
+    "end": 307
+  },
+  {
+    "name": "Kasimovian",
+    "lvl": 5,
+    "color": "#BFD0C5",
+    "start": 307,
+    "end": 303.7
+  },
+  {
+    "name": "Gzhelian",
+    "lvl": 5,
+    "color": "#CCD4C7",
+    "start": 303.7,
+    "end": 298.9
+  },
+  {
+    "name": "Asselian",
+    "lvl": 5,
+    "color": "#E36350",
+    "start": 298.9,
+    "end": 295.5
+  },
+  {
+    "name": "Sakmarian",
+    "lvl": 5,
+    "color": "#E36F5C",
+    "start": 295.5,
+    "end": 290.1
+  },
+  {
+    "name": "Artinskian",
+    "lvl": 5,
+    "color": "#E37B68",
+    "start": 290.1,
+    "end": 279.3
+  },
+  {
+    "name": "Kungurian",
+    "lvl": 5,
+    "color": "#E38776",
+    "start": 279.3,
+    "end": 272.3
+  },
+  {
+    "name": "Roadian",
+    "lvl": 5,
+    "color": "#FB8069",
+    "start": 272.3,
+    "end": 268.8
+  },
+  {
+    "name": "Wordian",
+    "lvl": 5,
+    "color": "#FB8D76",
+    "start": 268.8,
+    "end": 265.1
+  },
+  {
+    "name": "Capitanian",
+    "lvl": 5,
+    "color": "#FB9A85",
+    "start": 265.1,
+    "end": 259.9
+  },
+  {
+    "name": "Wuchiapingian",
+    "lvl": 5,
+    "color": "#FCB4A2",
+    "start": 259.9,
+    "end": 254.2
+  },
+  {
+    "name": "Changhsingian",
+    "lvl": 5,
+    "color": "#FCC0B2",
+    "start": 254.2,
+    "end": 252.2
+  },
+  {
+    "name": "Induan",
+    "lvl": 5,
+    "color": "#A4469F",
+    "start": 252.2,
+    "end": 251.2
+  },
+  {
+    "name": "Olenekian",
+    "lvl": 5,
+    "color": "#B051A5",
+    "start": 251.2,
+    "end": 247.2
+  },
+  {
+    "name": "Anisian",
+    "lvl": 5,
+    "color": "#BC75B7",
+    "start": 247.2,
+    "end": 242
+  },
+  {
+    "name": "Ladinian",
+    "lvl": 5,
+    "color": "#C983BF",
+    "start": 242,
+    "end": 237
+  },
+  {
+    "name": "Carnian",
+    "lvl": 5,
+    "color": "#C99BCB",
+    "start": 237,
+    "end": 228
+  },
+  {
+    "name": "Norian",
+    "lvl": 5,
+    "color": "#D6AAD3",
+    "start": 228,
+    "end": 208.5
+  },
+  {
+    "name": "Rhaetian",
+    "lvl": 5,
+    "color": "#E3B9DB",
+    "start": 208.5,
+    "end": 201.3
+  },
+  {
+    "name": "Hettangian",
+    "lvl": 5,
+    "color": "#4EB3D3",
+    "start": 201.3,
+    "end": 199.3
+  },
+  {
+    "name": "Sinemurian",
+    "lvl": 5,
+    "color": "#67BCD8",
+    "start": 199.3,
+    "end": 190.8
+  },
+  {
+    "name": "Pliensbachian",
+    "lvl": 5,
+    "color": "#80C5DD",
+    "start": 190.8,
+    "end": 182.7
+  },
+  {
+    "name": "Toarcian",
+    "lvl": 5,
+    "color": "#99CEE3",
+    "start": 182.7,
+    "end": 174.1
+  },
+  {
+    "name": "Aalenian",
+    "lvl": 5,
+    "color": "#9AD9DD",
+    "start": 174.1,
+    "end": 170.3
+  },
+  {
+    "name": "Bajocian",
+    "lvl": 5,
+    "color": "#A6DDE0",
+    "start": 170.3,
+    "end": 168.3
+  },
+  {
+    "name": "Bathonian",
+    "lvl": 5,
+    "color": "#B3E2E3",
+    "start": 168.3,
+    "end": 166.1
+  },
+  {
+    "name": "Callovian",
+    "lvl": 5,
+    "color": "#BFE7E5",
+    "start": 166.1,
+    "end": 163.5
+  },
+  {
+    "name": "Oxfordian",
+    "lvl": 5,
+    "color": "#BFE7F1",
+    "start": 163.5,
+    "end": 157.3
+  },
+  {
+    "name": "Kimmeridgian",
+    "lvl": 5,
+    "color": "#CCECF4",
+    "start": 157.3,
+    "end": 152.1
+  },
+  {
+    "name": "Tithonian",
+    "lvl": 5,
+    "color": "#D9F1F7",
+    "start": 152.1,
+    "end": 145
+  },
+  {
+    "name": "Berriasian",
+    "lvl": 5,
+    "color": "#8CCD60",
+    "start": 145,
+    "end": 139.8
+  },
+  {
+    "name": "Valanginian",
+    "lvl": 5,
+    "color": "#99D36A",
+    "start": 139.8,
+    "end": 132.9
+  },
+  {
+    "name": "Hauterivian",
+    "lvl": 5,
+    "color": "#A6D975",
+    "start": 132.9,
+    "end": 129.4
+  },
+  {
+    "name": "Barremian",
+    "lvl": 5,
+    "color": "#B3DF7F",
+    "start": 129.4,
+    "end": 125
+  },
+  {
+    "name": "Aptian",
+    "lvl": 5,
+    "color": "#BFE48A",
+    "start": 125,
+    "end": 113
+  },
+  {
+    "name": "Albian",
+    "lvl": 5,
+    "color": "#CCEA97",
+    "start": 113,
+    "end": 100.5
+  },
+  {
+    "name": "Cenomanian",
+    "lvl": 5,
+    "color": "#B3DE53",
+    "start": 100.5,
+    "end": 93.9
+  },
+  {
+    "name": "Turonian",
+    "lvl": 5,
+    "color": "#BFE35D",
+    "start": 93.9,
+    "end": 89.8
+  },
+  {
+    "name": "Coniacian",
+    "lvl": 5,
+    "color": "#CCE968",
+    "start": 89.8,
+    "end": 86.3
+  },
+  {
+    "name": "Santonian",
+    "lvl": 5,
+    "color": "#D9EF74",
+    "start": 86.3,
+    "end": 83.6
+  },
+  {
+    "name": "Campanian",
+    "lvl": 5,
+    "color": "#E6F47F",
+    "start": 83.6,
+    "end": 72.1
+  },
+  {
+    "name": "Maastrichtian",
+    "lvl": 5,
+    "color": "#F2FA8C",
+    "start": 72.1,
+    "end": 66
+  },
+  {
+    "name": "Danian",
+    "lvl": 5,
+    "color": "#FDB462",
+    "start": 66,
+    "end": 61.6
+  },
+  {
+    "name": "Selandian",
+    "lvl": 5,
+    "color": "#FEBF65",
+    "start": 61.6,
+    "end": 59.2
+  },
+  {
+    "name": "Thanetian",
+    "lvl": 5,
+    "color": "#FDBF6F",
+    "start": 59.2,
+    "end": 56
+  },
+  {
+    "name": "Ypresian",
+    "lvl": 5,
+    "color": "#FCA773",
+    "start": 56,
+    "end": 47.8
+  },
+  {
+    "name": "Lutetian",
+    "lvl": 5,
+    "color": "#FCB482",
+    "start": 47.8,
+    "end": 41.3
+  },
+  {
+    "name": "Bartonian",
+    "lvl": 5,
+    "color": "#FDC091",
+    "start": 41.3,
+    "end": 38
+  },
+  {
+    "name": "Priabonian",
+    "lvl": 5,
+    "color": "#FDCDA1",
+    "start": 38,
+    "end": 33.9
+  },
+  {
+    "name": "Rupelian",
+    "lvl": 5,
+    "color": "#FED99A",
+    "start": 33.9,
+    "end": 28.1
+  },
+  {
+    "name": "Chattian",
+    "lvl": 5,
+    "color": "#FEE6AA",
+    "start": 28.1,
+    "end": 23.03
+  },
+  {
+    "name": "Aquitanian",
+    "lvl": 5,
+    "color": "#FFFF33",
+    "start": 23.03,
+    "end": 20.44
+  },
+  {
+    "name": "Burdigalian",
+    "lvl": 5,
+    "color": "#FFFF41",
+    "start": 20.44,
+    "end": 15.97
+  },
+  {
+    "name": "Langhian",
+    "lvl": 5,
+    "color": "#FFFF4D",
+    "start": 15.97,
+    "end": 13.82
+  },
+  {
+    "name": "Serravallian",
+    "lvl": 5,
+    "color": "#FFFF59",
+    "start": 13.82,
+    "end": 11.62
+  },
+  {
+    "name": "Tortonian",
+    "lvl": 5,
+    "color": "#FFFF66",
+    "start": 11.62,
+    "end": 7.246
+  },
+  {
+    "name": "Messinian",
+    "lvl": 5,
+    "color": "#FFFF73",
+    "start": 7.246,
+    "end": 5.333
+  },
+  {
+    "name": "Zanclean",
+    "lvl": 5,
+    "color": "#FFFFB3",
+    "start": 5.333,
+    "end": 3.6
+  },
+  {
+    "name": "Piacenzian",
+    "lvl": 5,
+    "color": "#FFFFBF",
+    "start": 3.6,
+    "end": 2.588
+  },
+  {
+    "name": "Gelasian",
+    "lvl": 5,
+    "color": "#FFEDB3",
+    "start": 2.588,
+    "end": 1.806
+  },
+  {
+    "name": "Calabrian",
+    "lvl": 5,
+    "color": "#FFF2BA",
+    "start": 1.806,
+    "end": 0.781
+  },
+  {
+    "name": "Middle Pleistocene",
+    "lvl": 5,
+    "color": "#FFF2C7",
+    "start": 0.781,
+    "end": 0.126
+  },
+  {
+    "name": "Late Pleistocene",
+    "lvl": 5,
+    "color": "#FFF2D3",
+    "start": 0.126,
+    "end": 0.0117
+  },
+  {
+    "name": "Holocene",
+    "lvl": 5,
+    "color": "#FEF2E0",
+    "start": 0.0117,
+    "end": 0
+  }
+]

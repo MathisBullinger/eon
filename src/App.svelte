@@ -1,9 +1,14 @@
 <script lang="ts">
-  export let name: string
+  import Timeline from './Timeline.svelte'
 </script>
 
 <style>
-
+  main {
+    width: 100vw;
+    height: 100vh;
+  }
 </style>
 
-<main />
+<main>
+  <Timeline />
+</main>
