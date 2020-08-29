@@ -33,6 +33,11 @@
 
   const HEIGHT = window.innerHeight
 
+  const layerHeight = 20
+  const layerBuffer = 10
+  const layersTotalHeigt =
+    levels.length * layerHeight + (levels.length - 1) * layerBuffer
+
   function scroll(e: MouseWheelEvent) {
     if (e.ctrlKey) e.preventDefault()
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
@@ -54,7 +59,14 @@
 
   .line {
     transform-origin: center 5px;
-    transition: transform 0.15s ease;
+    transition: transform 0.1s ease-out;
+    opacity: 0.9;
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+  }
+
+  .line:hover {
+    transform: scaleY(1.2);
   }
 </style>
 
@@ -62,15 +74,16 @@
   class="timeline"
   viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
   preserveAspectRatio="none"
+  stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}
   on:mousewheel={scroll}>
   {#each levels as level}
     {#each level as span}
       <rect
         class="line"
         x={scale(span.start)}
-        y={span.lvl * 20 + 10}
+        y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer)}
         width={scale(span.end - span.start)}
-        height={10}
+        height={layerHeight}
         fill={span.color} />
     {/each}
   {/each}
