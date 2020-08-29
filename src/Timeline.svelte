@@ -42,6 +42,20 @@
   const layersTotalHeigt =
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
 
+  const gaps = Array(levels.length - 1).fill(0)
+  const gapSize = 25
+  const gapBounds: [number, number][] = Array(gaps.length)
+    .fill([0, 0])
+    .map((_, i, arr) => [
+      Math.max(...levels[i].map(({ start, end }) => Math.abs(end - start))),
+      arr[i - 1] || 4500,
+    ])
+  for (let i = 0; i < gapBounds.length; i++)
+    gapBounds[i] = [
+      Math.max(...levels[i].map(({ start, end }) => Math.abs(end - start))),
+      i === 0 ? 4500 : gapBounds[i - 1][0],
+    ]
+
   function scroll(e: MouseWheelEvent) {
     if (e.ctrlKey) e.preventDefault()
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
@@ -49,6 +63,15 @@
       const span = vb.w / (1 + buffer * 2)
       vb.x += span * (scaleBy / 2)
       vb.w -= span * scaleBy
+      for (let i = 0; i < gapBounds.length; i++)
+        gaps[i] = Math.max(
+          0,
+          Math.min(
+            1,
+            1 - (span - gapBounds[i][0]) / (gapBounds[i][1] - gapBounds[i][0])
+          ) * gapSize
+        )
+      console.log(span)
     } else {
       vb.x += vb.w * (e.deltaX / 1000)
     }
@@ -89,10 +112,10 @@
   on:mousewheel={scroll}>
   {#each levels as level}
     {#each level as span}
-      {#if span.lvl === 1}
+      {#if span.lvl === 1 || gaps[span.lvl - 2] === gapSize}
         <text
           x={scale(span.start) + scale(span.end - span.start) / 2}
-          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer}
+          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
           fill={span.txColor}
           transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}>
           {span.name}
@@ -101,7 +124,7 @@
       <rect
         class="line"
         x={scale(span.start)}
-        y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer)}
+        y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
         width={scale(span.end - span.start)}
         height={layerHeight}
         fill={span.color} />
