@@ -90,9 +90,13 @@
     if (span - span * scaleBy > end - start) scaleBy = 1 - (end - start) / span
     vb.x += span * (scaleBy * center)
     vb.w -= span * scaleBy
+    updateGap()
+  }
+
+  function updateGap() {
+    const span = vb.w / (1 + buffer * 2)
     for (let i = 0; i < gapBounds.length; i++) {
-      if (isPhone)
-        gaps[i] = span * (1 + scaleBy) < gapBounds[i][0] ? gapSize : 0
+      if (isPhone) gaps[i] = span < gapBounds[i][0] ? gapSize : 0
       else
         gaps[i] =
           bezier(
@@ -101,8 +105,7 @@
               Math.max(
                 0,
                 1 -
-                  (span + span * scaleBy - gapBounds[i][0]) /
-                    (gapBounds[i][1] - gapBounds[i][0])
+                  (span - gapBounds[i][0]) / (gapBounds[i][1] - gapBounds[i][0])
               )
             )
           ) * gapSize
@@ -177,6 +180,27 @@
       screenY,
     ]) as typeof lastPinch
     pinch()
+  }
+
+  async function goTo(target: typeof levels[number][number]) {
+    const buff = 0.1
+    const startW = vb.w
+    const targetW = (target.end - target.start) * (1 + 2 * buff)
+    const startX = vb.x
+    const targetX = target.start - (target.end - target.start) * buff
+    const dur = 500
+    const start = performance.now()
+
+    const step = () => {
+      const prog = (performance.now() - start) / dur
+      if (prog >= 1) return
+      const eased = bezier(prog)
+      vb.w = startW + eased * (targetW - startW)
+      vb.x = startX + eased * (targetX - startX)
+      updateGap()
+      requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
   }
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
@@ -300,6 +324,7 @@
           width={scale(span.end - Math.max(span.start, minX))}
           height={layerHeight}
           fill={span.color}
+          on:click={() => goTo(span)}
           {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
       {/if}
     {/each}
