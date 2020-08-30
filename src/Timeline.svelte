@@ -52,7 +52,7 @@
   const layerBuffer = 10
   const layersTotalHeigt =
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
-  const hovPx = 4
+  const hovPx = 3
 
   const gaps = Array(levels.length - 1).fill(0)
   const gapSize = window.innerHeight / (levels.length + 3)
@@ -74,6 +74,7 @@
 
   function scroll(e: WheelEvent) {
     let { deltaX, deltaY } = e
+    if (e.shiftKey) [deltaY, deltaX] = [deltaX, deltaY]
     if (e.ctrlKey) {
       e.preventDefault()
       deltaY *= 5
@@ -193,7 +194,12 @@
 
     const step = () => {
       const prog = (performance.now() - start) / dur
-      if (prog >= 1) return
+      if (prog >= 1) {
+        vb.w = targetW
+        vb.x = targetX
+        updateGap()
+        return
+      }
       const eased = bezier(prog)
       vb.w = startW + eased * (targetW - startW)
       vb.x = startX + eased * (targetX - startX)
@@ -234,10 +240,10 @@
   }
 
   text {
-    font-size: 12px;
+    font-size: 120px;
     text-anchor: middle;
     transform-box: fill-box;
-    transform-origin: center;
+    transform-origin: center 79%;
     transition: opacity 0.5s ease;
     text-rendering: geometricPrecision;
     user-select: none;
@@ -311,7 +317,7 @@
             x={scale(span.start) + scale(span.end - span.start) / 2}
             y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
             fill={span.txColor}
-            transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}
+            transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight) / 10} 0.1)`}
             opacity={span.lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.5) ? 1 : 0}>
             {span.name}
           </text>
