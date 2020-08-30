@@ -28,6 +28,18 @@
     .sort(([k1], [k2]) => parseInt(k1) - parseInt(k2))
     .map(([, v]) => v) as any
 
+  for (let level of levels) {
+    if (level[0].start > levels[0][0].start)
+      level.unshift({
+        name: '',
+        lvl: level[0].lvl,
+        color: '#3335',
+        start: levels[0][0].start,
+        end: level[0].start,
+        txColor: '#fff',
+      })
+  }
+
   const start = Math.min(...levels[0].map(({ start }) => start))
   const end = Math.max(...levels[0].map(({ end }) => end))
   const firstStart = levels[0][0].start
@@ -56,15 +68,14 @@
 
   const gaps = Array(levels.length - 1).fill(0)
   const gapSize = window.innerHeight / (levels.length + 3)
-  const gapBounds: [number, number][] = Array(gaps.length)
-    .fill([0, 0])
-    .map((_, i, arr) => [
-      Math.max(...levels[i].map(({ start, end }) => Math.abs(end - start))),
-      arr[i - 1] || 4500,
-    ])
+  const gapBounds: [number, number][] = Array(gaps.length).fill([0, 0])
   for (let i = 0; i < gapBounds.length; i++)
     gapBounds[i] = [
-      Math.max(...levels[i].map(({ start, end }) => Math.abs(end - start))),
+      Math.max(
+        ...levels[i].map(({ name, start, end }) =>
+          name ? Math.abs(end - start) : 0
+        )
+      ),
       i === 0 ? 4500 : gapBounds[i - 1][0],
     ]
 
@@ -249,7 +260,7 @@
       transform: translateX(var(--off-x)) scaleX(var(--scale-x));
     }
 
-    .line:hover {
+    .line[data-id]:hover {
       transform: translateX(var(--off-x)) scaleX(var(--scale-x)) scaleY(1.2);
     }
   }
@@ -344,13 +355,13 @@
         {#if span.end > vb.x && span.start < vb.x + vb.w}
           <rect
             class="line"
-            data-id={`${span.lvl}-${span.name}`}
+            data-id={span.name ? `${span.lvl}-${span.name}` : undefined}
             x={scale(Math.max(span.start, minX))}
             y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
             width={scale(span.end - Math.max(span.start, minX))}
             height={layerHeight}
             fill={span.color}
-            on:click={() => goTo(span)}
+            on:click={span.name ? () => goTo(span) : undefined}
             {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
         {/if}
       {/each}
@@ -369,7 +380,7 @@
           <span
             class="label"
             color={span.txColor}
-            style={`color: ${span.txColor}; opacity: ${level[0].lvl === 1 || gaps[span.lvl - 2] >= gapSize * 0.75 ? 1 : 0}`}>
+            style={`color: ${span.txColor}; opacity: ${level[0].lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.6) ? 1 : 0}`}>
             {span.name}
           </span>
         </div>
