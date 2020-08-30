@@ -99,14 +99,25 @@
     }
     if (Math.abs(wheelDeltaY) > Math.abs(wheelDeltaX))
       zoom(wheelDeltaY / 2000, e.screenX / window.innerWidth)
-    else vb.x += vb.w * (wheelDeltaX / 2000)
+    else {
+      vb.x += vb.w * (wheelDeltaX / 2000)
+      const span = vb.w / (1 + buffer * 2)
+      if (span < Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4)
+        vb.w -= span * (1 - Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4 / span)
+    }
 
     boundCheck()
   }
 
   function zoom(scaleBy: number, center = 0.5) {
     const span = vb.w / (1 + buffer * 2)
-    if (span - span * scaleBy > end - start) scaleBy = 1 - (end - start) / span
+    if (span - span * scaleBy > end - start) {
+      scaleBy = 1 - (end - start) / span
+    } else if (
+      span * (1 - scaleBy) <
+      Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4
+    )
+      scaleBy = 1 - Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4 / span
     vb.x += span * (scaleBy * center)
     vb.w -= span * scaleBy
     updateGap()
