@@ -59,8 +59,10 @@
   function scroll(e: MouseWheelEvent) {
     if (e.ctrlKey) e.preventDefault()
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      const scaleBy = -e.deltaY / 1000
+      let scaleBy = -e.deltaY / 1000
       const span = vb.w / (1 + buffer * 2)
+      if (span - span * scaleBy > end - start)
+        scaleBy = 1 - (end - start) / span
       vb.x += span * (scaleBy / 2)
       vb.w -= span * scaleBy
       for (let i = 0; i < gapBounds.length; i++)
@@ -68,13 +70,20 @@
           0,
           Math.min(
             1,
-            1 - (span - gapBounds[i][0]) / (gapBounds[i][1] - gapBounds[i][0])
+            1 -
+              (span + span * scaleBy - gapBounds[i][0]) /
+                (gapBounds[i][1] - gapBounds[i][0])
           ) * gapSize
         )
-      console.log(span)
     } else {
       vb.x += vb.w * (e.deltaX / 1000)
     }
+
+    const curBuff = buffer * (vb.w / ((end - start) * (1 + 2 * buffer)))
+    if (vb.x < start - (end - start) * curBuff)
+      vb.x = start - (end - start) * curBuff
+    else if (vb.x + vb.w > start + (end - start) * (1 + curBuff))
+      vb.x = start + (end - start) * (1 + curBuff) - vb.w
   }
 </script>
 
