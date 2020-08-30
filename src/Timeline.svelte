@@ -73,15 +73,21 @@
   let lastPinch: [Vector, Vector]
 
   function scroll(e: WheelEvent) {
-    let { deltaX, deltaY } = e
-    if (e.shiftKey) [deltaY, deltaX] = [deltaX, deltaY]
+    e.preventDefault()
+    let { wheelDeltaX, wheelDeltaY } = e as any
+    if (!wheelDeltaY && !wheelDeltaX) {
+      wheelDeltaX = -e.deltaX
+      wheelDeltaY = -e.deltaY
+    }
+    if (e.shiftKey) [wheelDeltaY, wheelDeltaX] = [wheelDeltaX, wheelDeltaY]
+    wheelDeltaX *= -1
     if (e.ctrlKey) {
       e.preventDefault()
-      deltaY *= 5
+      wheelDeltaY *= 5
     }
-    if (Math.abs(deltaY) > Math.abs(deltaX))
-      zoom(-deltaY / 1000, e.screenX / window.innerWidth)
-    else vb.x += vb.w * (deltaX / 1000)
+    if (Math.abs(wheelDeltaY) > Math.abs(wheelDeltaX))
+      zoom(wheelDeltaY / 2000, e.screenX / window.innerWidth)
+    else vb.x += vb.w * (wheelDeltaX / 2000)
 
     boundCheck()
   }
@@ -211,8 +217,6 @@
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
   $: minX = vb.x - vb.w / 2
-
-  $: console.log(vb)
 </script>
 
 <style>
@@ -316,25 +320,25 @@
 
 <div
   class="wrap"
-  style={`--buff-left: ${vb.x >= firstStart ? 0 : ((firstStart - vb.x) / vb.w) * window.innerWidth}px; --buff-right: ${lastEnd - vb.x >= vb.w ? 0 : ((vb.w - (lastEnd - vb.x)) / vb.w) * window.innerWidth}px; --zoom: ${(lastEnd - firstStart) / vb.w}; --left: ${((vb.x - firstStart) / -(lastEnd - firstStart)) * 100}%`}>
+  style={`--buff-left: ${vb.x >= firstStart ? 0 : ((firstStart - vb.x) / vb.w) * window.innerWidth}px; --buff-right: ${lastEnd - vb.x >= vb.w ? 0 : ((vb.w - (lastEnd - vb.x)) / vb.w) * window.innerWidth}px; --zoom: ${(lastEnd - firstStart) / vb.w}; --left: ${((vb.x - firstStart) / -(lastEnd - firstStart)) * 100}%`}
+  on:wheel={scroll}
+  on:touchstart={touchStart}
+  on:touchmove={touchMove}
+  on:touchend={touchEnd}
+  on:mousemove={(e) => {
+    const id = e.target.dataset.id
+    if (!id) {
+      hovered = undefined
+      return
+    }
+    const [lvl, name] = id.split('-')
+    hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
+  }}>
   <svg
     class="timeline"
     viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
     preserveAspectRatio="none"
-    stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}
-    on:wheel={scroll}
-    on:touchstart={touchStart}
-    on:touchmove={touchMove}
-    on:touchend={touchEnd}
-    on:mousemove={(e) => {
-      const id = e.target.dataset.id
-      if (!id) {
-        hovered = undefined
-        return
-      }
-      const [lvl, name] = id.split('-')
-      hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
-    }}>
+    stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}>
     {#each levels as level}
       {#each level as span}
         {#if span.end > vb.x && span.start < vb.x + vb.w}
