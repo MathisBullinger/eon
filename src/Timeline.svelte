@@ -52,6 +52,7 @@
   const layerBuffer = 10
   const layersTotalHeigt =
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
+  const hovPx = 4
 
   const gaps = Array(levels.length - 1).fill(0)
   const gapSize = window.innerHeight / (levels.length + 3)
@@ -179,7 +180,7 @@
   }
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
-  const hovPx = 5
+  $: minX = vb.x - vb.w / 2
 </script>
 
 <style>
@@ -281,22 +282,22 @@
   {#each levels as level}
     {#each level as span}
       {#if span.end > vb.x && span.start < vb.x + vb.w}
-        {#if span.lvl === 1 || gaps[span.lvl - 2] > 0}
+        {#if span.lvl === 1 || gaps[span.lvl - 2] > 0 || span === hovered}
           <text
             x={scale(span.start) + scale(span.end - span.start) / 2}
             y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
             fill={span.txColor}
             transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}
-            opacity={span.lvl === 1 || gaps[span.lvl - 2] === gapSize ? 1 : 0}>
+            opacity={span.lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.5) ? 1 : 0}>
             {span.name}
           </text>
         {/if}
         <rect
           class="line"
           data-id={`${span.lvl}-${span.name}`}
-          x={scale(span.start)}
+          x={scale(Math.max(span.start, minX))}
           y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
-          width={scale(span.end - span.start)}
+          width={scale(span.end - Math.max(span.start, minX))}
           height={layerHeight}
           fill={span.color}
           {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
