@@ -117,6 +117,8 @@
     text-anchor: middle;
     transform-box: fill-box;
     transform-origin: center;
+    transition: opacity 0.5s ease;
+    text-rendering: geometricPrecision;
   }
 
   .timespan {
@@ -170,15 +172,14 @@
   {#each levels as level}
     {#each level as span}
       {#if span.end > vb.x && span.start < vb.x + vb.w}
-        {#if span.lvl === 1 || gaps[span.lvl - 2] === gapSize}
-          <text
-            x={scale(span.start) + scale(span.end - span.start) / 2}
-            y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
-            fill={span.txColor}
-            transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}>
-            {span.name}
-          </text>
-        {/if}
+        <text
+          x={scale(span.start) + scale(span.end - span.start) / 2}
+          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
+          fill={span.txColor}
+          transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}
+          opacity={span.lvl === 1 || gaps[span.lvl - 2] === gapSize ? 1 : 0}>
+          {span.name}
+        </text>
         <rect
           class="line"
           x={scale(span.start)}
