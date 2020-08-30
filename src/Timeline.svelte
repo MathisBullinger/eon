@@ -5,6 +5,10 @@
   import * as vec from './utils/vector'
   import type { Vector } from './utils/vector'
   import debounce from 'lodash/debounce'
+  import { bezier } from './utils/ease'
+
+  const isPhone = window.matchMedia('(hover: none) and (pointer: coarse)')
+    .matches
 
   let byLvl = {}
   for (let interval of data) {
@@ -48,7 +52,7 @@
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
 
   const gaps = Array(levels.length - 1).fill(0)
-  const gapSize = 25
+  const gapSize = window.innerHeight / (levels.length + 3)
   const gapBounds: [number, number][] = Array(gaps.length)
     .fill([0, 0])
     .map((_, i, arr) => [
@@ -83,16 +87,23 @@
     if (span - span * scaleBy > end - start) scaleBy = 1 - (end - start) / span
     vb.x += span * (scaleBy * center)
     vb.w -= span * scaleBy
-    for (let i = 0; i < gapBounds.length; i++)
-      gaps[i] = Math.max(
-        0,
-        Math.min(
-          1,
-          1 -
-            (span + span * scaleBy - gapBounds[i][0]) /
-              (gapBounds[i][1] - gapBounds[i][0])
-        ) * gapSize
-      )
+    for (let i = 0; i < gapBounds.length; i++) {
+      if (isPhone)
+        gaps[i] = span * (1 + scaleBy) < gapBounds[i][0] ? gapSize : 0
+      else
+        gaps[i] =
+          bezier(
+            Math.min(
+              1,
+              Math.max(
+                0,
+                1 -
+                  (span + span * scaleBy - gapBounds[i][0]) /
+                    (gapBounds[i][1] - gapBounds[i][0])
+              )
+            )
+          ) * gapSize
+    }
   }
 
   function boundCheck() {
@@ -104,7 +115,10 @@
   }
 
   function touchStart({ touches }: TouchEvent) {
-    if (touches.length !== 2) return void (pinching = false)
+    if (touches.length !== 2) {
+      pinching = false
+      return
+    }
     pinching = true
     pinchStart = Array.from(touches).map(({ screenX, screenY }) => [
       screenX,
@@ -171,14 +185,19 @@
 
   .line {
     transform-origin: center;
-    transition: transform 0.1s ease-out;
     opacity: 0.9;
     transform-origin: 50% 50%;
     transform-box: fill-box;
   }
 
-  .line:hover {
-    transform: scaleY(1.2);
+  @media (hover: hover), (pointer: fine) {
+    .line {
+      transition: transform 0.1s ease-out;
+    }
+
+    .line:hover {
+      transform: scaleY(1.2);
+    }
   }
 
   text {
