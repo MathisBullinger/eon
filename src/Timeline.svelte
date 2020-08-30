@@ -1,6 +1,7 @@
 <script lang="ts">
   import data from '../data/intervals.json'
   import { blendHexColorString as blend } from './utils/color'
+  import { formatTimespan } from './utils/time'
 
   let byLvl = {}
   for (let interval of data) {
@@ -21,6 +22,8 @@
 
   const start = Math.min(...levels[0].map(({ start }) => start))
   const end = Math.max(...levels[0].map(({ end }) => end))
+  const firstStart = levels[0][0].start
+  const lastEnd = levels[0].slice(-1)[0].end
 
   const buffer = 0.05
   const vb = {
@@ -56,9 +59,13 @@
     ]
 
   function scroll(e: MouseWheelEvent) {
-    if (e.ctrlKey) e.preventDefault()
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      let scaleBy = -e.deltaY / 1000
+    let { deltaX, deltaY } = e
+    if (e.ctrlKey) {
+      e.preventDefault()
+      deltaY *= 5
+    }
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      let scaleBy = -deltaY / 1000
       const span = vb.w / (1 + buffer * 2)
       if (span - span * scaleBy > end - start)
         scaleBy = 1 - (end - start) / span
@@ -76,7 +83,7 @@
           ) * gapSize
         )
     } else {
-      vb.x += vb.w * (e.deltaX / 1000)
+      vb.x += vb.w * (deltaX / 1000)
     }
 
     const curBuff = buffer * (vb.w / ((end - start) * (1 + 2 * buffer)))
@@ -111,6 +118,47 @@
     transform-box: fill-box;
     transform-origin: center;
   }
+
+  .timespan {
+    --buff-left: 0px;
+    --buff-right: 0px;
+
+    color: #fff8;
+    position: absolute;
+    left: 50vw;
+    bottom: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    transform-style: preserve-3d;
+    transform: translateX(-50%);
+    background-color: #111;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+  }
+
+  .timespan::before,
+  .timespan::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: calc(100vw - var(--buff-left) - var(--buff-right));
+    transform: translateX(calc((100vw - var(--buff-left) * 2) / -2))
+      translateZ(-1px);
+  }
+
+  .timespan::before {
+    background-color: #fff5;
+    top: 50%;
+    height: 1px;
+  }
+
+  .timespan::after {
+    height: 100%;
+    border-left: 1px solid #fff5;
+    border-right: 1px solid #fff5;
+    margin-left: -1px;
+  }
 </style>
 
 <svg
@@ -142,3 +190,9 @@
     {/each}
   {/each}
 </svg>
+<span
+  class="timespan"
+  style={`--buff-left: ${vb.x >= firstStart ? 0 : ((firstStart - vb.x) / vb.w) * window.innerWidth}px; --buff-right: ${lastEnd - vb.x >= vb.w ? 0 : ((vb.w - (lastEnd - vb.x)) / vb.w) * window.innerWidth}px;`}>
+  {formatTimespan((Math.min(vb.x + vb.w, lastEnd) - Math.max(vb.x, firstStart)) * 1e6)}
+  years
+</span>
