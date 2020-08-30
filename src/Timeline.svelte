@@ -211,9 +211,20 @@
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
   $: minX = vb.x - vb.w / 2
+
+  $: console.log(vb)
 </script>
 
 <style>
+  .wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
   .timeline {
     width: 100%;
     height: 100%;
@@ -239,20 +250,7 @@
     }
   }
 
-  text {
-    font-size: 120px;
-    text-anchor: middle;
-    transform-box: fill-box;
-    transform-origin: center 79%;
-    transition: opacity 0.5s ease;
-    text-rendering: geometricPrecision;
-    user-select: none;
-  }
-
   .timespan {
-    --buff-left: 0px;
-    --buff-right: 0px;
-
     color: #fff8;
     position: absolute;
     left: 50vw;
@@ -289,56 +287,93 @@
     border-right: 1px solid #fff5;
     margin-left: -1px;
   }
+
+  .label-container {
+    display: block;
+    position: fixed;
+    height: 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transform: translateY(-100%);
+    pointer-events: none;
+    content-visibility: auto;
+  }
+
+  .label {
+    color: #fff;
+    font-size: 12px;
+    transition: opacity 0.2s ease;
+    position: sticky;
+    left: 10px;
+    right: 10px;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 </style>
 
-<svg
-  class="timeline"
-  viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
-  preserveAspectRatio="none"
-  stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}
-  on:wheel={scroll}
-  on:touchstart={touchStart}
-  on:touchmove={touchMove}
-  on:touchend={touchEnd}
-  on:mousemove={(e) => {
-    const id = e.target.dataset.id
-    if (!id) {
-      hovered = undefined
-      return
-    }
-    const [lvl, name] = id.split('-')
-    hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
-  }}>
-  {#each levels as level}
-    {#each level as span}
-      {#if span.end > vb.x && span.start < vb.x + vb.w}
-        {#if span.lvl === 1 || gaps[span.lvl - 2] > 0 || span === hovered}
-          <text
-            x={scale(span.start) + scale(span.end - span.start) / 2}
-            y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
-            fill={span.txColor}
-            transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight) / 10} 0.1)`}
-            opacity={span.lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.5) ? 1 : 0}>
-            {span.name}
-          </text>
+<div
+  class="wrap"
+  style={`--buff-left: ${vb.x >= firstStart ? 0 : ((firstStart - vb.x) / vb.w) * window.innerWidth}px; --buff-right: ${lastEnd - vb.x >= vb.w ? 0 : ((vb.w - (lastEnd - vb.x)) / vb.w) * window.innerWidth}px; --zoom: ${(lastEnd - firstStart) / vb.w}; --left: ${((vb.x - firstStart) / -(lastEnd - firstStart)) * 100}%`}>
+  <svg
+    class="timeline"
+    viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
+    preserveAspectRatio="none"
+    stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}
+    on:wheel={scroll}
+    on:touchstart={touchStart}
+    on:touchmove={touchMove}
+    on:touchend={touchEnd}
+    on:mousemove={(e) => {
+      const id = e.target.dataset.id
+      if (!id) {
+        hovered = undefined
+        return
+      }
+      const [lvl, name] = id.split('-')
+      hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
+    }}>
+    {#each levels as level}
+      {#each level as span}
+        {#if span.end > vb.x && span.start < vb.x + vb.w}
+          <rect
+            class="line"
+            data-id={`${span.lvl}-${span.name}`}
+            x={scale(Math.max(span.start, minX))}
+            y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
+            width={scale(span.end - Math.max(span.start, minX))}
+            height={layerHeight}
+            fill={span.color}
+            on:click={() => goTo(span)}
+            {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
         {/if}
-        <rect
-          class="line"
-          data-id={`${span.lvl}-${span.name}`}
-          x={scale(Math.max(span.start, minX))}
-          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
-          width={scale(span.end - Math.max(span.start, minX))}
-          height={layerHeight}
-          fill={span.color}
-          on:click={() => goTo(span)}
-          {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
-      {/if}
+      {/each}
     {/each}
+  </svg>
+  {#each levels as level}
+    {#if level[0].lvl === 1 || gaps[level[0].lvl - 2] > 0}
+      {#each level as span}
+        <div
+          class="label-container"
+          style={`
+            top: ${HEIGHT / 2 - layersTotalHeigt / 2 + (level[0].lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < level[0].lvl - 1 ? 1 : -1), 0)}px;
+            left: ${((span.start - vb.x) / vb.w) * 100}%;
+            width: ${((span.end - span.start) / vb.w) * 100}%;
+            `}>
+          <span
+            class="label"
+            color={span.txColor}
+            style={`color: ${span.txColor}; opacity: ${level[0].lvl === 1 || gaps[span.lvl - 2] >= gapSize * 0.75 ? 1 : 0}`}>
+            {span.name}
+          </span>
+        </div>
+      {/each}
+    {/if}
   {/each}
-</svg>
-<span
-  class="timespan"
-  style={`--buff-left: ${vb.x >= firstStart ? 0 : ((firstStart - vb.x) / vb.w) * window.innerWidth}px; --buff-right: ${lastEnd - vb.x >= vb.w ? 0 : ((vb.w - (lastEnd - vb.x)) / vb.w) * window.innerWidth}px;`}>
-  {formatTimespan((Math.min(vb.x + vb.w, lastEnd) - Math.max(vb.x, firstStart)) * 1e6)}
-  years
-</span>
+  <span class="timespan">
+    {formatTimespan((Math.min(vb.x + vb.w, lastEnd) - Math.max(vb.x, firstStart)) * 1e6)}
+    years
+  </span>
+</div>
