@@ -6,6 +6,7 @@
   import type { Vector } from './utils/vector'
   import debounce from 'lodash/debounce'
   import { bezier } from './utils/ease'
+  import App from './App.svelte'
 
   const isPhone = window.matchMedia('(hover: none) and (pointer: coarse)')
     .matches
@@ -31,6 +32,7 @@
   const end = Math.max(...levels[0].map(({ end }) => end))
   const firstStart = levels[0][0].start
   const lastEnd = levels[0].slice(-1)[0].end
+  let hovered: typeof levels[number][number]
 
   const buffer = 0.05
   const vb = {
@@ -175,12 +177,17 @@
     ]) as typeof lastPinch
     pinch()
   }
+
+  $: xPx = (1 / window.innerWidth) * scale(vb.w)
+  const hovPx = 5
 </script>
 
 <style>
   .timeline {
     width: 100%;
     height: 100%;
+    --off-x: 0px;
+    --scale-x: 1;
   }
 
   .line {
@@ -193,10 +200,11 @@
   @media (hover: hover), (pointer: fine) {
     .line {
       transition: transform 0.1s ease-out;
+      transform: translateX(var(--off-x)) scaleX(var(--scale-x));
     }
 
     .line:hover {
-      transform: scaleY(1.2);
+      transform: translateX(var(--off-x)) scaleX(var(--scale-x)) scaleY(1.2);
     }
   }
 
@@ -207,6 +215,7 @@
     transform-origin: center;
     transition: opacity 0.5s ease;
     text-rendering: geometricPrecision;
+    user-select: none;
   }
 
   .timespan {
@@ -259,25 +268,38 @@
   on:wheel={scroll}
   on:touchstart={touchStart}
   on:touchmove={touchMove}
-  on:touchend={touchEnd}>
+  on:touchend={touchEnd}
+  on:mousemove={(e) => {
+    const id = e.target.dataset.id
+    if (!id) {
+      hovered = undefined
+      return
+    }
+    const [lvl, name] = id.split('-')
+    hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
+  }}>
   {#each levels as level}
     {#each level as span}
       {#if span.end > vb.x && span.start < vb.x + vb.w}
-        <text
-          x={scale(span.start) + scale(span.end - span.start) / 2}
-          y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
-          fill={span.txColor}
-          transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}
-          opacity={span.lvl === 1 || gaps[span.lvl - 2] === gapSize ? 1 : 0}>
-          {span.name}
-        </text>
+        {#if span.lvl === 1 || gaps[span.lvl - 2] > 0}
+          <text
+            x={scale(span.start) + scale(span.end - span.start) / 2}
+            y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) - layerBuffer + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
+            fill={span.txColor}
+            transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight)} 1)`}
+            opacity={span.lvl === 1 || gaps[span.lvl - 2] === gapSize ? 1 : 0}>
+            {span.name}
+          </text>
+        {/if}
         <rect
           class="line"
+          data-id={`${span.lvl}-${span.name}`}
           x={scale(span.start)}
           y={HEIGHT / 2 - layersTotalHeigt / 2 + (span.lvl - 1) * (layerHeight + layerBuffer) + gaps.reduce((a, c, i) => a + (c / 2) * (i < span.lvl - 1 ? 1 : -1), 0)}
           width={scale(span.end - span.start)}
           height={layerHeight}
-          fill={span.color} />
+          fill={span.color}
+          {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
       {/if}
     {/each}
   {/each}
