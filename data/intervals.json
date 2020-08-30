@@ -1169,24 +1169,38 @@
     "end": 0.781
   },
   {
-    "name": "Middle Pleistocene",
+    "name": "Chibanian",
     "lvl": 5,
     "color": "#FFF2C7",
     "start": 0.781,
-    "end": 0.126
+    "end": 0.129
   },
   {
     "name": "Late Pleistocene",
     "lvl": 5,
     "color": "#FFF2D3",
-    "start": 0.126,
+    "start": 0.129,
     "end": 0.0117
   },
   {
-    "name": "Holocene",
+    "name": "Greenlandian",
     "lvl": 5,
     "color": "#FEF2E0",
     "start": 0.0117,
+    "end": 0.0082
+  },
+  {
+    "name": "Northgrippian",
+    "lvl": 5,
+    "color": "#FEF2E0",
+    "start": 0.0082,
+    "end": 0.0042
+  },
+  {
+    "name": "Meghalayan",
+    "lvl": 5,
+    "color": "#FEF2E0",
+    "start": 0.0042,
     "end": 0
   }
 ]

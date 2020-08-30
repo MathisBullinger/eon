@@ -30,10 +30,9 @@
     h: (500 / window.innerWidth) * (end - start),
   }
 
-  $: scale = (n: number): number => {
-    const f = Math.ceil(vb.w / 1000)
-    return n / f
-  }
+  $: sf = 10 ** Math.floor(Math.log10(vb.w))
+
+  $: scale = (n: number) => n / sf
 
   const HEIGHT = window.innerHeight
 
@@ -63,7 +62,8 @@
       const span = vb.w / (1 + buffer * 2)
       if (span - span * scaleBy > end - start)
         scaleBy = 1 - (end - start) / span
-      vb.x += span * (scaleBy / 2)
+
+      vb.x += span * (scaleBy * (e.screenX / window.innerWidth))
       vb.w -= span * scaleBy
       for (let i = 0; i < gapBounds.length; i++)
         gaps[i] = Math.max(
