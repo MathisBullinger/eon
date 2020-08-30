@@ -1,7 +1,7 @@
 <script lang="ts">
   import data from '../data/intervals.json'
   import { blendHexColorString as blend } from './utils/color'
-  import { formatTimespan } from './utils/time'
+  import { formatTimespan, formatTimeStamp } from './utils/time'
   import * as vec from './utils/vector'
   import type { Vector } from './utils/vector'
   import debounce from 'lodash/debounce'
@@ -65,6 +65,7 @@
   const layersTotalHeigt =
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
   const hovPx = 3
+  const tsTop = 30
 
   const gaps = Array(levels.length - 1).fill(0)
   const gapSize = window.innerHeight / (levels.length + 3)
@@ -138,7 +139,7 @@
       vb.x = start + (end - start) * (1 + curBuff) - vb.w
   }
 
-  function touchStart({ touches }: TouchEvent) {
+  function touchStart({ touches, ...e }: TouchEvent) {
     if (touches.length !== 2) {
       pinching = false
       return
@@ -228,6 +229,16 @@
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
   $: minX = vb.x - vb.w / 2
+
+  $: span = vb.w * 1e6
+  $: step = 1 * 10 ** (Math.log10(span) | 0)
+  $: while (((span / step) | 0) < 4) step /= 2
+  $: steps = Array(Math.ceil(span / step) + 1)
+    .fill(0)
+    .map((_, i) =>
+      Math.max((Math.floor((vb.x * 1e6) / step) + i) * step, firstStart * 1e6)
+    )
+  $: if (steps[1] - steps[0] < step / 2) steps = [steps[0], ...steps.slice(2)]
 </script>
 
 <style>
@@ -262,6 +273,7 @@
 
     .line[data-id]:hover {
       transform: translateX(var(--off-x)) scaleX(var(--scale-x)) scaleY(1.2);
+      cursor: pointer;
     }
   }
 
@@ -327,6 +339,25 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  .timestamps {
+    transition: opacity 0.2s ease-out;
+  }
+
+  .timestamp {
+    font-size: 100px;
+    text-anchor: middle;
+    transform-box: fill-box;
+    transform-origin: center 79%;
+    transition: opacity 0.5s ease;
+    text-rendering: geometricPrecision;
+    user-select: none;
+    fill: #fff8;
+  }
+
+  .ts-mark {
+    fill: #fff8;
+  }
 </style>
 
 <div
@@ -350,6 +381,20 @@
     viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
     preserveAspectRatio="none"
     stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}>
+    <g class="timestamps" style={`opacity: ${vb.w > 4e3 ? 0 : 1}`}>
+      {#each steps as step}
+        <text
+          class="timestamp"
+          x={scale(step / 1e6)}
+          y={tsTop}
+          transform={`scale(${scale(vb.w) / window.innerWidth / (HEIGHT / window.innerHeight) / 10} 0.1)`}>
+          {formatTimeStamp(step)}
+        </text>
+        <polygon
+          class="ts-mark"
+          points={`${scale(step / 1e6) - 4 * xPx} ${tsTop + 7} ${scale(step / 1e6) + 4 * xPx} ${tsTop + 7} ${scale(step / 1e6)} ${tsTop + 14}`} />
+      {/each}
+    </g>
     {#each levels as level}
       {#each level as span}
         {#if span.end > vb.x && span.start < vb.x + vb.w}
