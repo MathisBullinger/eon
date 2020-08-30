@@ -8,6 +8,7 @@
     "validate": "svelte-check"
   },
   "dependencies": {
+    "lodash": "^4.17.20",
     "sirv-cli": "^1.0.0"
   },
   "devDependencies": {
@@ -15,6 +16,7 @@
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@rollup/plugin-typescript": "^4.0.0",
     "@tsconfig/svelte": "^1.0.0",
+    "@types/lodash": "^4.14.161",
     "eslint": "^7.7.0",
     "eslint-plugin-svelte3": "^2.7.3",
     "prettier": "^2.1.1",

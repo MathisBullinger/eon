@@ -2,6 +2,9 @@
   import data from '../data/intervals.json'
   import { blendHexColorString as blend } from './utils/color'
   import { formatTimespan } from './utils/time'
+  import * as vec from './utils/vector'
+  import type { Vector } from './utils/vector'
+  import debounce from 'lodash/debounce'
 
   let byLvl = {}
   for (let interval of data) {
@@ -58,39 +61,105 @@
       i === 0 ? 4500 : gapBounds[i - 1][0],
     ]
 
-  function scroll(e: MouseWheelEvent) {
+  let pinching = false
+  let pinchStart: [Vector, Vector]
+  let lastPinch: [Vector, Vector]
+
+  function scroll(e: WheelEvent) {
     let { deltaX, deltaY } = e
     if (e.ctrlKey) {
       e.preventDefault()
       deltaY *= 5
     }
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      let scaleBy = -deltaY / 1000
-      const span = vb.w / (1 + buffer * 2)
-      if (span - span * scaleBy > end - start)
-        scaleBy = 1 - (end - start) / span
+    if (Math.abs(deltaY) > Math.abs(deltaX))
+      zoom(-deltaY / 1000, e.screenX / window.innerWidth)
+    else vb.x += vb.w * (deltaX / 1000)
 
-      vb.x += span * (scaleBy * (e.screenX / window.innerWidth))
-      vb.w -= span * scaleBy
-      for (let i = 0; i < gapBounds.length; i++)
-        gaps[i] = Math.max(
-          0,
-          Math.min(
-            1,
-            1 -
-              (span + span * scaleBy - gapBounds[i][0]) /
-                (gapBounds[i][1] - gapBounds[i][0])
-          ) * gapSize
-        )
-    } else {
-      vb.x += vb.w * (deltaX / 1000)
-    }
+    boundCheck()
+  }
 
+  function zoom(scaleBy: number, center = 0.5) {
+    const span = vb.w / (1 + buffer * 2)
+    if (span - span * scaleBy > end - start) scaleBy = 1 - (end - start) / span
+    vb.x += span * (scaleBy * center)
+    vb.w -= span * scaleBy
+    for (let i = 0; i < gapBounds.length; i++)
+      gaps[i] = Math.max(
+        0,
+        Math.min(
+          1,
+          1 -
+            (span + span * scaleBy - gapBounds[i][0]) /
+              (gapBounds[i][1] - gapBounds[i][0])
+        ) * gapSize
+      )
+  }
+
+  function boundCheck() {
     const curBuff = buffer * (vb.w / ((end - start) * (1 + 2 * buffer)))
     if (vb.x < start - (end - start) * curBuff)
       vb.x = start - (end - start) * curBuff
     else if (vb.x + vb.w > start + (end - start) * (1 + curBuff))
       vb.x = start + (end - start) * (1 + curBuff) - vb.w
+  }
+
+  function touchStart({ touches }: TouchEvent) {
+    if (touches.length !== 2) return void (pinching = false)
+    pinching = true
+    pinchStart = Array.from(touches).map(({ screenX, screenY }) => [
+      screenX,
+      screenY,
+    ]) as typeof pinchStart
+  }
+
+  function touchEnd() {
+    pinching = false
+  }
+
+  const pinch = debounce(
+    () => {
+      if (!lastPinch) return
+
+      const start = vec.minus(pinchStart[1], pinchStart[0])
+      const last = vec.minus(lastPinch[1], lastPinch[0])
+
+      const dist = vec.mag(last) - vec.mag(start)
+
+      const left = pinchStart[0][0] < pinchStart[1][0] ? 0 : 1
+      const xDiff = lastPinch.map((v, i) => Math.abs(v[0] - pinchStart[i][0]))
+
+      let center = 0.5
+
+      if (xDiff[0] + xDiff[1])
+        center =
+          (pinchStart[left][0] +
+            (pinchStart[Number(!left)][0] - pinchStart[left][0]) / 2) /
+            window.innerWidth +
+          (xDiff[left] / (xDiff[0] + xDiff[1])) *
+            ((lastPinch[0][0] -
+              pinchStart[0][0] +
+              (lastPinch[1][0] - pinchStart[1][0])) /
+              window.innerWidth)
+
+      zoom(dist / 500, center)
+      boundCheck()
+
+      pinchStart = lastPinch
+      lastPinch = undefined
+    },
+    1000 / 30,
+    { leading: true, trailing: true }
+  )
+
+  function touchMove(e: TouchEvent) {
+    if (e.touches.length !== 2) return void (pinching = false)
+    e.preventDefault()
+    if (!pinching) return touchStart(e)
+    lastPinch = Array.from(e.touches).map(({ screenX, screenY }) => [
+      screenX,
+      screenY,
+    ]) as typeof lastPinch
+    pinch()
   }
 </script>
 
@@ -168,7 +237,10 @@
   viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
   preserveAspectRatio="none"
   stroke-width={(0.5 / window.innerWidth) * scale(vb.w)}
-  on:mousewheel={scroll}>
+  on:wheel={scroll}
+  on:touchstart={touchStart}
+  on:touchmove={touchMove}
+  on:touchend={touchEnd}>
   {#each levels as level}
     {#each level as span}
       {#if span.end > vb.x && span.start < vb.x + vb.w}
