@@ -10,6 +10,8 @@
   import * as wiki from './utils/wiki'
   import { article } from './stores'
   import Icon from './Icon.svelte'
+  import Search from './Search.svelte'
+  import { some } from 'lodash'
 
   const isPhone = window.matchMedia('(hover: none) and (pointer: coarse)')
     .matches
@@ -69,6 +71,29 @@
     levels.length * layerHeight + (levels.length - 1) * layerBuffer
   const hovPx = 3
   const tsTop = 30
+
+  let searchQuery: string
+  let searchHits: typeof levels[number][number][] = []
+
+  $: {
+    if (searchQuery) {
+      searchHits = levels
+        .flat()
+        .filter(({ name }) => name.toLowerCase().includes(searchQuery))
+
+      if (searchHits.length) {
+        const min = Math.min(...searchHits.map(({ start }) => start))
+        const max = Math.max(...searchHits.map(({ end }) => end))
+
+        goTo({ min, max })
+      }
+    } else {
+      searchHits = []
+      updateGap()
+      if (typeof searchQuery === 'string')
+        goTo({ min: firstStart, max: lastEnd })
+    }
+  }
 
   const gaps = Array(levels.length - 1).fill(0)
   const gapSize = window.innerHeight / (levels.length + 3)
@@ -132,18 +157,24 @@
     const span = vb.w / (1 + buffer * 2)
     for (let i = 0; i < gapBounds.length; i++) {
       if (isPhone) gaps[i] = span < gapBounds[i][0] ? gapSize : 0
-      else
+      else {
         gaps[i] =
-          bezier(
-            Math.min(
-              1,
-              Math.max(
-                0,
-                1 -
-                  (span - gapBounds[i][0]) / (gapBounds[i][1] - gapBounds[i][0])
-              )
-            )
-          ) * gapSize
+          (searchHits.length &&
+          levels[i + 1].filter((span) => searchHits.includes(span)).length <
+            Math.min(4, levels[i + 1].length / 4)
+            ? 1
+            : bezier(
+                Math.min(
+                  1,
+                  Math.max(
+                    0,
+                    1 -
+                      (span - gapBounds[i][0]) /
+                        (gapBounds[i][1] - gapBounds[i][0])
+                  )
+                )
+              )) * gapSize
+      }
     }
   }
 
@@ -217,12 +248,23 @@
     pinch()
   }
 
-  async function goTo(target: typeof levels[number][number]) {
-    const buff = 0.1
+  let stId: number
+  async function goTo({
+    target,
+    min,
+    max,
+  }: {
+    target?: typeof levels[number][number]
+    min?: number
+    max?: number
+  }) {
     const startW = vb.w
-    const targetW = (target.end - target.start) * (1 + 2 * buff)
+    const targetW =
+      (target ? target.end - target.start : max - min) * (1 + 2 * buffer)
     const startX = vb.x
-    const targetX = target.start - (target.end - target.start) * buff
+    const targetX = target
+      ? target.start - (target.end - target.start) * buffer
+      : min - (max - min) * buffer
     const dur = 500
     const start = performance.now()
 
@@ -238,13 +280,14 @@
       vb.w = startW + eased * (targetW - startW)
       vb.x = startX + eased * (targetX - startX)
       updateGap()
-      requestAnimationFrame(step)
+      stId = requestAnimationFrame(step)
     }
-    requestAnimationFrame(step)
+    cancelAnimationFrame(stId)
+    stId = requestAnimationFrame(step)
   }
 
   async function onClick(span: typeof levels[number][number]) {
-    goTo(span)
+    goTo({ target: span })
   }
 
   function loadArticle(span: typeof levels[number][number]) {
@@ -253,7 +296,7 @@
 
   let pointerDown = false
   function onPointerDown(e: PointerEvent) {
-    if ((e.target as HTMLElement).tagName !== 'svg') return
+    if ((e.target as HTMLElement).tagName?.toLowerCase() !== 'svg') return
     pointerDown = true
   }
 
@@ -296,14 +339,14 @@
 
   .line {
     transform-origin: center;
-    opacity: 0.9;
     transform-origin: 50% 50%;
     transform-box: fill-box;
+    transition: opacity 15s ease;
   }
 
   @media (hover: hover), (pointer: fine) {
     .line {
-      transition: transform 0.1s ease-out;
+      transition: transform 0.1s ease-out, opacity 0.1s ease;
       transform: translateX(var(--off-x)) scaleX(var(--scale-x));
     }
 
@@ -375,10 +418,11 @@
     max-width: 100%;
     display: flex;
     align-items: center;
+    --overflow: hidden;
   }
 
   .label > :global(span) {
-    overflow-x: hidden;
+    overflow-x: var(--overflow);
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -413,6 +457,12 @@
   .ts-mark {
     fill: #fff8;
   }
+
+  .search {
+    position: fixed;
+    top: 5vw;
+    right: 5vw;
+  }
 </style>
 
 <div
@@ -439,6 +489,12 @@
     pointerDown = false
   }}
   on:pointermove={onPointerMove}>
+  <div class="search">
+    <Search
+      bind:input={searchQuery}
+      results={searchHits}
+      onSelect={(target) => goTo({ target })} />
+  </div>
   <svg
     class="timeline"
     viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}
@@ -470,7 +526,10 @@
             height={layerHeight}
             fill={span.color}
             on:click={span.name ? () => onClick(span) : undefined}
-            {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
+            style={`
+              opacity: ${!searchQuery || searchHits.includes(span) ? 1 : 0.2};
+              ${!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? '' : span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ')}
+            `} />
         {/if}
       {/each}
     {/each}
@@ -488,7 +547,7 @@
           <div
             class="label"
             color={span.txColor}
-            style={`color: ${span.txColor}; opacity: ${level[0].lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.6) ? 1 : 0}`}>
+            style={`color: ${span.txColor}; ${searchHits.length ? (searchHits.includes(span) ? 'opacity: 1; --overflow: visible;' : 'opacity: 0;') : `opacity: ${(level[0].lvl === 1 && vb.w < 5060) || span === hovered || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.6) ? 1 : 0}`}`}>
             <span>{span.name}</span>
             <Icon icon="info" color="#fffc" onClick={() => loadArticle(span)} />
           </div>
