@@ -19,7 +19,7 @@
     width: 30rem;
     max-height: 50rem;
     right: 2rem;
-    top: 2rem;
+    top: 4rem;
     box-sizing: border-box;
     padding: 1rem;
     overflow-y: auto;

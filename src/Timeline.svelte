@@ -9,6 +9,7 @@
   import App from './App.svelte'
   import * as wiki from './utils/wiki'
   import { article } from './stores'
+  import Icon from './Icon.svelte'
 
   const isPhone = window.matchMedia('(hover: none) and (pointer: coarse)')
     .matches
@@ -242,6 +243,9 @@
 
   async function onClick(span: typeof levels[number][number]) {
     goTo(span)
+  }
+
+  function loadArticle(span: typeof levels[number][number]) {
     wiki.fetchArticle(span.name).then(() => article.set(span.name))
   }
 
@@ -341,8 +345,10 @@
     justify-content: space-around;
     align-items: center;
     transform: translateY(-100%);
-    pointer-events: none;
     content-visibility: auto;
+    margin-right: -1.5rem;
+    padding-right: 1.5rem;
+    user-select: none;
   }
 
   .label {
@@ -353,9 +359,26 @@
     left: 10px;
     right: 10px;
     max-width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .label > :global(span) {
+    overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
+  }
+
+  .label > :global(svg) {
+    height: 1rem;
+    margin-left: 0.5rem;
+    margin-right: -1.5rem;
+    opacity: 0;
+    transition: 0.1s ease opacity;
+  }
+
+  .label-container:hover :global(svg) {
+    opacity: 1;
   }
 
   .timestamps {
@@ -440,12 +463,13 @@
             left: ${((span.start - vb.x) / vb.w) * 100}%;
             width: ${((span.end - span.start) / vb.w) * 100}%;
             `}>
-          <span
+          <div
             class="label"
             color={span.txColor}
             style={`color: ${span.txColor}; opacity: ${level[0].lvl === 1 || gaps[span.lvl - 2] >= (span !== hovered ? gapSize * 0.75 : layerBuffer * 1.6) ? 1 : 0}`}>
-            {span.name}
-          </span>
+            <span>{span.name}</span>
+            <Icon icon="info" color="#fffc" onClick={() => loadArticle(span)} />
+          </div>
         </div>
       {/each}
     {/if}
