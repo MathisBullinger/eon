@@ -102,12 +102,7 @@
     }
     if (Math.abs(wheelDeltaY) > Math.abs(wheelDeltaX))
       zoom(wheelDeltaY / 2000, e.screenX / window.innerWidth)
-    else {
-      vb.x += vb.w * (wheelDeltaX / 2000)
-      const span = vb.w / (1 + buffer * 2)
-      if (span < Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4)
-        vb.w -= span * (1 - Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4 / span)
-    }
+    else pan(wheelDeltaX / 2000)
 
     boundCheck()
   }
@@ -124,6 +119,13 @@
     vb.x += span * (scaleBy * center)
     vb.w -= span * scaleBy
     updateGap()
+  }
+
+  function pan(dx: number) {
+    vb.x += vb.w * dx
+    const span = vb.w / (1 + buffer * 2)
+    if (span < Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4)
+      vb.w -= span * (1 - Math.log(Math.abs(vb.x + vb.w - 1.0001)) / 4 / span)
   }
 
   function updateGap() {
@@ -153,7 +155,7 @@
       vb.x = start + (end - start) * (1 + curBuff) - vb.w
   }
 
-  function touchStart({ touches, ...e }: TouchEvent) {
+  function touchStart({ touches }: TouchEvent) {
     if (touches.length !== 2) {
       pinching = false
       return
@@ -247,6 +249,18 @@
 
   function loadArticle(span: typeof levels[number][number]) {
     wiki.fetchArticle(span.name).then(() => article.set(span.name))
+  }
+
+  let pointerDown = false
+  function onPointerDown(e: PointerEvent) {
+    if ((e.target as HTMLElement).tagName !== 'svg') return
+    pointerDown = true
+  }
+
+  function onPointerMove(e: PointerEvent) {
+    if (!pointerDown) return
+    pan(-e.movementX / window.innerWidth)
+    boundCheck()
   }
 
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
@@ -416,7 +430,15 @@
     }
     const [lvl, name] = id.split('-')
     hovered = levels[parseInt(lvl) - 1].find((v) => v.name === name)
-  }}>
+  }}
+  on:pointerdown={onPointerDown}
+  on:pointerup={() => {
+    pointerDown = false
+  }}
+  on:pointerleave={() => {
+    pointerDown = false
+  }}
+  on:pointermove={onPointerMove}>
   <svg
     class="timeline"
     viewBox={`${scale(vb.x)} 0 ${scale(vb.w)} ${HEIGHT}`}

@@ -2,7 +2,7 @@
   import { article } from './stores'
   import Icon from './Icon.svelte'
   import * as wiki from './utils/wiki'
-  let content
+  let content: HTMLDivElement
 
   $: data = wiki.read($article) ?? {}
 
