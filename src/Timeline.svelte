@@ -7,6 +7,8 @@
   import debounce from 'lodash/debounce'
   import { bezier } from './utils/ease'
   import App from './App.svelte'
+  import * as wiki from './utils/wiki'
+  import { article } from './stores'
 
   const isPhone = window.matchMedia('(hover: none) and (pointer: coarse)')
     .matches
@@ -238,6 +240,11 @@
     requestAnimationFrame(step)
   }
 
+  async function onClick(span: typeof levels[number][number]) {
+    goTo(span)
+    wiki.fetchArticle(span.name).then(() => article.set(span.name))
+  }
+
   $: xPx = (1 / window.innerWidth) * scale(vb.w)
   $: minX = vb.x - vb.w / 2
 
@@ -417,7 +424,7 @@
             width={scale(span.end - Math.max(span.start, minX))}
             height={layerHeight}
             fill={span.color}
-            on:click={span.name ? () => goTo(span) : undefined}
+            on:click={span.name ? () => onClick(span) : undefined}
             {...!(hovered && (span.start < hovered.start || span.end > hovered.end)) ? {} : { style: span.start >= hovered.end || span.end <= hovered.start ? `--off-x: ${hovPx * xPx * (span.end <= hovered.start ? -1 : 1)}px` : [`--scale-x: ${((span.start < hovered.start && span.end > hovered.end ? 2 * hovPx : hovPx) * xPx + scale(span.end - span.start)) / scale(span.end - span.start)}`, ...(span.start < hovered.start && span.end > hovered.end ? [] : [`--off-x: ${(span.start >= hovered.start ? hovPx / 2 : -hovPx / 2) * xPx}px`])].join('; ') }} />
         {/if}
       {/each}

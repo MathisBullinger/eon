@@ -1,5 +1,6 @@
 <script lang="ts">
   import Timeline from './Timeline.svelte'
+  import Article from './Article.svelte'
 </script>
 
 <style>
@@ -15,4 +16,5 @@
 
 <main>
   <Timeline />
+  <Article />
 </main>
