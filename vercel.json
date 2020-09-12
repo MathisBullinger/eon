@@ -1,0 +1,12 @@
+{
+  "name": "eon",
+  "routes": [
+    {
+      "src": "/public/images/(.*)",
+      "headers": {
+        "content-type": "image/jpeg"
+      },
+      "dest": "/public/images/$1"
+    }
+  ]
+}
